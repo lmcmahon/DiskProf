@@ -1,15 +1,17 @@
 (ns DiskProf.core
   ;(:use 'seesaw.core)
-  )
+  (:gen-class))
 (use 'seesaw.core)
 (import 'java.io.File)
 (import 'javax.swing.JFileChooser)
-;(import 'javax.swing.JPanel)
+					;(import 'javax.swing.JPanel)
+
+(native!)
 
 (defrecord file-rec [file size children rep expanded-rep])
 
 (defn pos-listener [proportion]
-  [:component-resized (fn [e] (do (println proportion) (config! e :divider-location proportion)))])
+  [:component-resized (fn [e] (config! e :divider-location proportion))])
 
 (defn make-expanded-rep [size childs]
   (delay (if-let [n (first childs)]
@@ -39,12 +41,14 @@
 (defn run [root]
   (let [root-rec (make-file-rec root)
 	f (frame :title "Disk Profiler"
-		 :content @(:expanded-rep root-rec))]))
+		 :content @(:expanded-rep root-rec)
+		 :on-close :exit)]
+    (-> f pack! show!)))
 
-(defn -main []
+(defn -main [& args]
   (let [chooser (JFileChooser.)]
     (.setFileSelectionMode chooser JFileChooser/FILES_AND_DIRECTORIES)
-    (let [result (.showOpenDialog chooser)
+    (let [result (.showOpenDialog chooser nil)
 	  file (.getSelectedFile chooser)]
       (if (= result JFileChooser/APPROVE_OPTION)
 	(run file)))))
