@@ -13,28 +13,28 @@
 
 (defprotocol Pfile-rec (def-button [_]) (def-expanded-rep [this] [this rem-size rem-children]) (def-rep [this]))
 
-(deftype file-rec [name size children ^{:unsynchronized-mutable true} rep]
+(defrecord file-rec [name size children rep]
   Pfile-rec
   ;;must not be called before def-rep
-  (def-button [this]
-    (when (seq children)
-      (let [b (button :text "Expand")]
-	(listen b :action (fn [e]
-			    (config! rep :items [(def-expanded-rep this)])))
-	(config! rep :items [b])
-	b)))
-  (def-expanded-rep [this rem-size rem-children]
-    (let [[f s r] rem-children]
-      (if s
-	(if r
+ (def-button [this]
+   (when (seq children)
+     (let [b (button :text "Expand")]
+ 	(listen b :action (fn [e]
+ 			    (config! rep :items [(def-expanded-rep this)])))
+ 	(config! rep :items [b])
+ 	b)))
+ (def-expanded-rep [this rem-size rem-children]
+   (let [[f s r] rem-children]
+     (if s
+ 	(if r
 	  (left-right-split (def-rep f) (def-expanded-rep this (- rem-size (:size f)) (cons s r)) :listen (pos-listener (/ (:size f) rem-size)))
-	  (left-right-split (def-rep f) (def-rep s) :listen (pos-listener (/ (:size f) rem-size))))
-	(def-rep f))))
-  (def-expanded-rep [this] (def-expanded-rep this size children))
-  (def-rep [this]
-    (set! rep (grid-panel :border name))
-    (config! rep :items [(def-button this)])
-    rep))
+ 	  (left-right-split (def-rep f) (def-rep s) :listen (pos-listener (/ (:size f) rem-size))))
+ 	(def-rep f))))
+ (def-expanded-rep [this] (def-expanded-rep this size children))
+ (def-rep [this]
+;   (set! rep (grid-panel :border name))
+   (config! rep :items [(def-button this)])
+   rep))
 
 (defn make-expanded-rep [size childs]
   (delay (if-let [n (first childs)]
