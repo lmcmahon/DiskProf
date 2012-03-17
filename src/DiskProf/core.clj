@@ -8,7 +8,7 @@
 
 (native!)
 
-(defrecord file-rec [file size children rep expanded-rep])
+(deftype file-rec [file size children ^{:unsynchronized-mutalbe true} rep expanded-rep])
 
 (defn pos-listener [proportion]
   [:component-resized (fn [e] (config! e :divider-location proportion))])
@@ -42,7 +42,8 @@
   (let [root-rec (make-file-rec root)
 	f (frame :title "Disk Profiler"
 		 :content @(:expanded-rep root-rec)
-		 :on-close :exit)]
+		 ;:on-close :exit
+		 )]
     (-> f pack! show!)))
 
 (defn -main [& args]
