@@ -8,10 +8,31 @@
 
 (native!)
 
-(deftype file-rec [file size children ^{:unsynchronized-mutalbe true} rep expanded-rep])
-
 (defn pos-listener [proportion]
   [:component-resized (fn [e] (config! e :divider-location proportion))])
+
+(defprotocol Pfile-rec (make-button [_]))
+
+(deftype file-rec [name size children ^{:unsynchronized-mutable true} rep]
+  ;;must not be called before def-rep
+  (def-button [this]
+    (when (seq children)
+      (let [b (button :text "Expand")]
+	(listen b :action (fn [e]
+			    (config! rep :items [(def-expanded-rep this size)])))
+	(config! rep :items [b])
+	b)))
+  (def-expanded-rep [this rem-size]
+    (let [[f s r] children]
+      (if s
+	(if r
+	  (left-right-split (def-rep f) (def-expanded-rep this (- rem-size (:size f)) (cons s r)) :listen (pos-listener (/ (:size f) rem-size)))
+	  (left-right-split (def-rep f) (def-rep s) :listen (pos-listener (/ (:size f) rem-size))))
+	(def-rep f))))
+  (def-rep [this]
+    (set! rep (grid-panel :border name))
+    (config! rep :items [(def-button this)])
+    rep))
 
 (defn make-expanded-rep [size childs]
   (delay (if-let [n (first childs)]
