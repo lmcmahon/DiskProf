@@ -1,13 +1,18 @@
 # DiskProf
 
-FIXME: write description
+This is a simple program to display a visual representation
+of where your hard drive space is being used. The GUI is kind
+of a hack, but it works. It consists of a series of buttons
+labeled with the names of directories, where each button's size is
+proportional to the directory's size. Click a button to expand that
+folder and see it's subdirectories.
 
 ## Usage
 
-FIXME: write
+You can create a runnable jar file using leiningen.
 
 ## License
 
-Copyright (C) 2010 FIXME
+Copyright (C) 2012
 
 Distributed under the Eclipse Public License, the same as Clojure.

@@ -3,5 +3,5 @@
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
 		 [seesaw "1.2.2"]]
-;  :main DiskProf.core
+  :main DiskProf.core
   )
