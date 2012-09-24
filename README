@@ -5,7 +5,7 @@ of where your hard drive space is being used. The GUI is kind
 of a hack, but it works. It consists of a series of buttons
 labeled with the names of directories, where each button's size is
 proportional to the directory's size. Click a button to expand that
-folder and see it's subdirectories.
+directory and see it's subdirectories.
 
 ## Usage
 
